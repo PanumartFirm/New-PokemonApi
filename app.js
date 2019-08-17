@@ -1,10 +1,9 @@
 const express = require('express')
 const app = express()
-const port = 3000
 
 app.use(express.json())
 
-app.get('/', (req, res) => res.send('Hello World'))
+app.get('/', (req, res) => res.send({message: 'Hello world'}))
 
 class Pokemon{
     constructor(name,type){
@@ -20,8 +19,8 @@ class Pokemon{
 let pokemons= [
     
     {
-        name: "Pokédex ",
-        type: "bug",
+        name: "Gennija",
+        type: "water",
         id: 1
     },
     {
@@ -64,8 +63,17 @@ function getpokemonbyID(id){
 app.get('/pokemon', (req, res) => res.send(pokemons))
 
 app.get('/pokemon/:id', (req, res) => {
+if (!checkError(req.params.id)){
+    res.status(400).send({error : "Insuffucuent paramiters : id is required parameter "})
+    return
+}
    let id = req.params.id
    let p = pokemons[id-1]
+   
+   if ( p === undefined||p=== null){
+    res.status(400).send({error : "The pokemon could not be found"})
+    return
+   }
    res.send(p)
 })
 
@@ -76,7 +84,7 @@ app.post('/pokemon', (req, res) => {
             )
 
         {
-            res.status(400).send({error : "Insuffucuent paramiters: name and type are required parameter"})
+            res.status(400).send({error : "Insuffucuent paramiters : name and type are required parameter"})
             return
     }
 
@@ -84,13 +92,13 @@ app.post('/pokemon', (req, res) => {
     pokemons.push(tmp)
     console.log(tmp)
     //res.send('Still work in progreen...')
-    res.sendStatus(201)
+    res.sendStatus(201)                   
 })
 
 app.put('/pokemon/:id', (req, res) =>{
     
     if(!checkError(req.body.type2)){
-        res.status(400).send({error : "Insuffucuent paramiters:type2 is required parameter"})
+        res.status(400).send({error : "Insuffucuent paramiters : type2 is required parameter"})
         return
     }
     
@@ -107,7 +115,7 @@ app.put('/pokemon/:id', (req, res) =>{
 
     p.type2=req.body.type2
     pokemons[id-1]=p
-    res.sendStatus(201)
+    res.sendStatus(200)
 })
 
 app.delete('/pokemon/:id',(req,res)=>{
@@ -126,6 +134,8 @@ app.delete('/pokemon/:id',(req,res)=>{
     delete pokemons[id -1]
     res.sendStatus(204)
 
-
 })
-app.listen(port, () => console.log(`Pokemon API listening on port ${port}!`))
+
+module.exports = app 
+
+// app.listen(port, () => console.log(`Pokemon API listening on port ${port}!`))
