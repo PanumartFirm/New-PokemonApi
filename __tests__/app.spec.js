@@ -42,14 +42,14 @@ describe('Pokemon API,' , () => {
 
         describe('POST /pokemon', () => {
             it('shouble return 201 Created and have new pokemon ',(done )=>{
-                    request(app).post('/pokemon')
+                    request(app).post('/pokemons')
                     .send ({name : "Unknown",type: "Psysic"})
                     .set('Accept','application/json')
                     .expect(201,done)   
                     })
 
             it('shouble return 400 Bad Request when missed requied fields ',(done )=>{
-                request(app).post('/pokemon')
+                request(app).post('/pokemons')
                 .expect(400)
                 .end((err,res) => {
                     res.body.error.should.equal('Insuffucuent paramiters : name and type are required parameter') 
@@ -78,7 +78,7 @@ describe('Pokemon API,' , () => {
 
          describe('Intergration Test()', () => {
              it('GET /pokemons shouble return list of pokemons', (done) =>{
-                 request('http://localhost:3000').get('/pokemon')
+                 request('http://localhost:3000').get('/pokemons')
                  .expect(200)
                  .end((err ,res ) => {
                 res.body.should.be.have.a('array')
